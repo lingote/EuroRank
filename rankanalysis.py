@@ -60,9 +60,8 @@ def overalltop20(service):
     ts.columns = x
     ts['keyword'] = [i[0] for i in ts['keyword']]
     ts.sort('position', inplace=True)
-    top20full = ts[ts.impressions>5][:20].to_html()
-    print ts
-    top20noeuro = ts[(ts['impressions']>5) & (~ts['keyword'].str.contains('euro'))][:20].to_html()
+    top20full = ts[ts.impressions>5][:20].to_html(index=False)
+    top20noeuro = ts[(ts['impressions']>5) & (~ts['keyword'].str.contains('euro'))][:20].to_html(index=False)
     return top20full, top20noeuro
 
 
