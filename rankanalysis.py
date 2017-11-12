@@ -33,10 +33,10 @@ def buildrequest(service, startDate='2017-09-01', endDate = '2017-11-01',
     }
     response = service.searchanalytics().query(siteUrl='https://eurodriver.ch', body=request).execute()
     totclicks = 0
-    print(len(response['rows']))
+    #print(len(response['rows']))
     for k in response['rows']:
         totclicks += k['clicks']
-    print(totclicks)
+    #print(totclicks)
     return response
 
 
@@ -47,12 +47,15 @@ def total(service):
     req = rankanalysis.buildrequest(service, startDate='2010-01-01',endDate='2025-01-01')['rows'][0]
 
 
-def overalltop20(service):
+def overalltop20(service, lookback = -1):
     """
     Top 20 keywords over full time period
     """
     latest = datetime.today() - timedelta(days=3)
-    df = buildrequest(service, startDate = '2010-01-01', endDate=latest.strftime('%Y-%m-%d'),
+    startDate = datetime.today() - timedelta(days=(3+lookback)
+    if lookback == -1:
+        startDate = '2010-01-01'
+    df = buildrequest(service, startDate = startDate, endDate=latest.strftime('%Y-%m-%d'),
                       dimensions=['query'], rowlimit=1500)['rows']
     ts = pd.DataFrame(df)
     x = pd.Series(ts.columns)
@@ -73,17 +76,33 @@ def overalltop20(service):
 def querywoeuro(service, start='2010-01-01', end='2025-01-01'):
     # Latest data has a 3 day lag to present
     latest = datetime.today() - timedelta(days=3)
-    lookback = 10
+    lookback = 30
     #latest = latest.strftime('%Y-%m-%d')
-    index = pd.date_range(latest-datetime.timedelta(lockback), periods=lookback, freq='D')
-    ts = pd.DataFrame(colums=['key', 'impressions', 'ctr', 'rank'], index=index)
+    index = pd.date_range(latest - timedelta(lookback), periods=lookback, freq='D')
+    #ts = pd.DataFrame(colums=['key', 'impressions', 'ctr', 'rank'], index=index)
     dimfilter = [{'filters': [{'operator': 'notContains', 'expression': 'euro', 'dimension': 'query'}]}]
+    resdf = {}
     for i in range(lookback):
         df = buildrequest(service, startDate = (latest - timedelta(days=1)).strftime('%Y-%m-%d'),
-                           endDate=latest.strftime('%Y-%m-%d'), dimensions=['query'], rowlimit=10)['rows']
+                           endDate=latest.strftime('%Y-%m-%d'), dimensions=['query'], rowlimit=1500)['rows']
                            #dimfilter=myfilter)
         latest = latest - timedelta(days=1)
-        print(df)
+        df = pd.DataFrame(df)
+        x = pd.Series(df.columns)
+        x[x[x == 'keys'].index[0]] = 'keyword'
+        df.columns = x
+        df['keyword'] = [i[0] for i in df['keyword']]
+        df = df.ix[(~df['keyword'].str.contains('euro')),:].sort_values('impressions', ascending=False)
+        for i in df.index:
+            if df.ix[i,'keyword'] in resdf:
+                #resdf[df.ix[i,'keyword']].append([latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i, 'ctr']])
+                resdf[df.ix[i,'keyword']].append([latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i, 'ctr']])
+            else:
+                #resdf[df.ix[i,'keyword']] = [latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i,'ctr']]
+                resdf[df.ix[i,'keyword']] = pd.DataFrame(latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i,'ctr']]
+        #print(df[:20])
+    print(len(resdf))
+    return resdf
 
 
 def makedf():
