@@ -66,13 +66,13 @@ def main():
     top20all, top20allnoeuro, top20lowctr = rankanalysis.overalltop20(service)
     # get today - 33 days:
     
-    top20all_30days, top20allnoeuro_30days, top20lowctr_30days = rankanalysis.overalltop20(service, lookback=30)
-    comments = 'Eintrage mit mindestens 5 \'impressions\''
+    top20_30days, top20noeuro_30days, top20lowctr_30days = rankanalysis.overalltop20(service, lookback=30)
+    comments = 'Eintr\xe4ge mit mindestens 5 \'impressions\''
     updateconf(top20all, 'Top 20 Positionen - voller Zeitraum', comments, 4194374)
     updateconf(top20allnoeuro, 'Top 20 Pos. ohne \'euro\' im Keyword - voller Zeitraum', comments, 4194383)
     updateconf(top20lowctr, 'Top 10 Position, schlechte Click Rate - voller Zeitraum', comments, 4194388)
     updateconf(top20_30days, 'Top 20 Positionen - letzte 30 Tage', comments, 4194442)
-    updateconf(top20allnoeuro_30days, 'Top 20 Pos. ohne \'euro\' im Keyword - letzte 30 Tage', comments,4194440 )
+    updateconf(top20noeuro_30days, 'Top 20 Pos. ohne \'euro\' im Keyword - letzte 30 Tage', comments,4194440 )
     updateconf(top20lowctr_30days, 'Top 10 Position, schlechte Click Rate - letzte 30 Tage', comments, 4194438 )
 
 
