@@ -42,9 +42,9 @@ def updateconf(htmlcode, title='Top 20 Positionen - voller Zeitraum', pid='41943
     updata = {
         'id' : str(pageinfo['id']),
         'type' : 'page',
-        'title' : 'Master - Slave Status',
+        'title' : title,
         'version' : {'number' : pageinfo['version']['number'] + 1},
-        'space' : {'key' : "IT"},
+        'space' : {'key' : "GRA"},
         #'ancestors' : [anc],
         'body'  : {
             'storage' :
