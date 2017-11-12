@@ -61,10 +61,11 @@ def overalltop20(service):
     ts['keyword'] = [i[0] for i in ts['keyword']]
     ts.sort_values('position', inplace=True)
     top20full = ts[ts.impressions>5][:20].to_html(index=False)
-    top20noeuro = ts[(ts['impressions']>5) &
-                     (~ts['keyword'].str.contains('euro'))
-                    ].sort_values('impressions', inplace=True)
-    return top20full, top20noeuro[:20].to_html(index=False)
+    top20noeuro = ts.ix[(ts['impressions']>5) &
+                     (~ts['keyword'].str.contains('euro')),:
+                    ]#.sort_values('impressions')
+    print top20noeuro.sort_values('position')
+    return top20full, top20noeuro.sort_values('position')[:20].to_html(index=False)
 
 
 def querywoeuro(service, start='2010-01-01', end='2025-01-01'):
