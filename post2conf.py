@@ -61,7 +61,7 @@ def updateconf(htmlcode, title='Top 20 Positionen - voller Zeitraum', pid='41943
 
 
 def main():
-    serice = rankanalysis.getservice(rankanalysis.creds())
+    service = rankanalysis.getservice(rankanalysis.creds())
     top20all, top20allnoeuro = rankanalysis.overalltop20(service)
     updateconf(top20all)
 
