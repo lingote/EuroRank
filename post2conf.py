@@ -65,7 +65,7 @@ def main():
     top20all, top20allnoeuro = rankanalysis.overalltop20(service)
     comments = 'Eintrage mit mindestens 5 \'impressions\''
     updateconf(top20all, 'Top 20 Positionen - voller Zeitraum', comments)
-    updateconf(top20allnoeuro, 'Top 20 Positionen ohne \'euro\' - voller Zeitraum', comments)
+    updateconf(top20allnoeuro, 'Top 20 Positionen ohne \'euro\' - voller Zeitraum', comments, 4194375)
 
 
 if __name__ == '__main__':
