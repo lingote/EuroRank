@@ -52,10 +52,12 @@ def overalltop20(service, lookback = -1):
     Top 20 keywords over full time period
     """
     latest = datetime.today() - timedelta(days=3)
-    startDate = datetime.today() - timedelta(days=(3+lookback)
+    startDate = datetime.today() - timedelta(days=(3+lookback))
+    startDate = startDate.strftime('%Y-%m-%d')
     if lookback == -1:
         startDate = '2010-01-01'
-    df = buildrequest(service, startDate = startDate, endDate=latest.strftime('%Y-%m-%d'),
+    df = buildrequest(service, startDate = startDate,
+                      endDate=latest.strftime('%Y-%m-%d'),
                       dimensions=['query'], rowlimit=1500)['rows']
     ts = pd.DataFrame(df)
     x = pd.Series(ts.columns)
@@ -95,11 +97,11 @@ def querywoeuro(service, start='2010-01-01', end='2025-01-01'):
         df = df.ix[(~df['keyword'].str.contains('euro')),:].sort_values('impressions', ascending=False)
         for i in df.index:
             if df.ix[i,'keyword'] in resdf:
-                #resdf[df.ix[i,'keyword']].append([latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i, 'ctr']])
                 resdf[df.ix[i,'keyword']].append([latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i, 'ctr']])
+                #resdf[df.ix[i,'keyword']].append([latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i, 'ctr']])
             else:
-                #resdf[df.ix[i,'keyword']] = [latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i,'ctr']]
-                resdf[df.ix[i,'keyword']] = pd.DataFrame(latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i,'ctr']]
+                resdf[df.ix[i,'keyword']] = [latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i,'ctr']]
+                #resdf[df.ix[i,'keyword']] = pd.DataFrame(latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i,'ctr']]
         #print(df[:20])
     print(len(resdf))
     return resdf
