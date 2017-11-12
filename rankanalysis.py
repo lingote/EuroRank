@@ -64,7 +64,10 @@ def overalltop20(service):
     top20noeuro = ts.ix[(ts['impressions']>5) &
                      (~ts['keyword'].str.contains('euro')),:
                     ]#.sort_values('impressions')
-    return top20full, top20noeuro.sort_values('position')[:20].to_html(index=False)
+    badts = ts[(ts['impressions']>5) & (~ts['keyword'].str.contains('euro'))
+                & (ts['position']<10)].sort_values('ctr')
+    return (top20full, top20noeuro.sort_values('position')[:20].to_html(index=False),
+            badts[:20].to_html(index=False))
 
 
 def querywoeuro(service, start='2010-01-01', end='2025-01-01'):

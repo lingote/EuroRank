@@ -35,6 +35,7 @@ def updateconf(htmlcode, title='Top 20 Positionen - voller Zeitraum',
     #requests.put(url, data={'value',htmlcode.encode('ascii')}, auth=('admin','1234'))
     timeinfo = '<h2>Status at {timenow}</h2>'.format(timenow = time.strftime('%X %x %Z'))
     comment = '<h2>{com}</h2>'.format(com = comment)
+    comment = comment + '<p>Automatically generated - edits will be overwritten</p>'
     timeinfo = timeinfo.replace('\n','')
     pageinfo = get_page_info(pageid=pid)
     htmlcode = str(timeinfo + comment + htmlcode)
@@ -62,10 +63,11 @@ def updateconf(htmlcode, title='Top 20 Positionen - voller Zeitraum',
 
 def main():
     service = rankanalysis.getservice(rankanalysis.creds())
-    top20all, top20allnoeuro = rankanalysis.overalltop20(service)
+    top20all, top20allnoeuro, top20lowctr = rankanalysis.overalltop20(service)
     comments = 'Eintrage mit mindestens 5 \'impressions\''
     updateconf(top20all, 'Top 20 Positionen - voller Zeitraum', comments, 4194374)
-    updateconf(top20allnoeuro, 'Top 20 Positionen ohne \'euro\' - voller Zeitraum', comments, 4194383)
+    updateconf(top20allnoeuro, 'Top 20 Pos. ohne \'euro\' im Keyword - voller Zeitraum', comments, 4194383)
+    updateconf(top20lowctr, 'Gute Position, schlechte Click Rate - voller Zeitraum', comments, 4194388)
 
 
 if __name__ == '__main__':
