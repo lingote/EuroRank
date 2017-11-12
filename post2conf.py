@@ -64,3 +64,7 @@ def main():
     serice = rankanalysis.getservice(rankanalysis.cred())
     top20all, top20allnoeuro = rankanalysis.overalltop20(service)
     updateconf(top20all)
+
+
+if __name__ == '__main__':
+   main()
