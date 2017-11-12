@@ -31,7 +31,7 @@ def updateconf(htmlcode, title='Top 20 Positionen - voller Zeitraum',
     :param htmlcode:
     :return:
     """
-    url = 'http://192.168.10.49:8090/rest/api/content/{}'.format('4194374')
+    url = 'http://192.168.10.49:8090/rest/api/content/{}'.format(pid)
     #requests.put(url, data={'value',htmlcode.encode('ascii')}, auth=('admin','1234'))
     timeinfo = '<h2>Status at {timenow}</h2>'.format(timenow = time.strftime('%X %x %Z'))
     comment = '<h2>{com}</h2>'.format(com = comment)
@@ -64,8 +64,8 @@ def main():
     service = rankanalysis.getservice(rankanalysis.creds())
     top20all, top20allnoeuro = rankanalysis.overalltop20(service)
     comments = 'Eintrage mit mindestens 5 \'impressions\''
-    updateconf(top20all, 'Top 20 Positionen - voller Zeitraum', comments)
-    updateconf(top20allnoeuro, 'Top 20 Positionen ohne \'euro\' - voller Zeitraum', comments, 4194375)
+    updateconf(top20all, 'Top 20 Positionen - voller Zeitraum', comments, 4194374)
+    updateconf(top20allnoeuro, 'Top 20 Positionen ohne \'euro\' - voller Zeitraum', comments, 4194383)
 
 
 if __name__ == '__main__':
