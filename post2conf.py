@@ -24,7 +24,8 @@ def get_page_info(pageid=65628):
     return r.json()
 
 
-def updateconf(htmlcode, title='Top 20 Positionen - voller Zeitraum', pid='4194374'):
+def updateconf(htmlcode, title='Top 20 Positionen - voller Zeitraum',
+               comment = '', pid='4194374'):
     """
     Takes html and updates the Master-Slave status confluence page
     :param htmlcode:
@@ -33,11 +34,10 @@ def updateconf(htmlcode, title='Top 20 Positionen - voller Zeitraum', pid='41943
     url = 'http://192.168.10.49:8090/rest/api/content/{}'.format('4194374')
     #requests.put(url, data={'value',htmlcode.encode('ascii')}, auth=('admin','1234'))
     timeinfo = '<h2>Status at {timenow}</h2>'.format(timenow = time.strftime('%X %x %Z'))
+    comment = '<h2>{com}</h2>'.format(com = comment)
     timeinfo = timeinfo.replace('\n','')
-    comment = ('<p>This is page is automatically generated',
-              ' - do not edit manually (edits won\'t be saved)</p>')
     pageinfo = get_page_info(pageid=pid)
-    htmlcode = str(timeinfo + htmlcode)
+    htmlcode = str(timeinfo + comment + htmlcode)
     print(htmlcode)
     updata = {
         'id' : str(pageinfo['id']),
@@ -63,7 +63,8 @@ def updateconf(htmlcode, title='Top 20 Positionen - voller Zeitraum', pid='41943
 def main():
     service = rankanalysis.getservice(rankanalysis.creds())
     top20all, top20allnoeuro = rankanalysis.overalltop20(service)
-    updateconf(top20all)
+    comments = 'Eintrage mit mindestens 5 \'impressions\''
+    updateconf(top20all, 'Top 20 Positionen - voller Zeitraum', comments)
 
 
 if __name__ == '__main__':
