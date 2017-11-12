@@ -36,11 +36,11 @@ def updateconf(htmlcode, title='Top 20 Positionen - voller Zeitraum', pid='41943
     timeinfo = timeinfo.replace('\n','')
     comment = ('<p>This is page is automatically generated',
               ' - do not edit manually (edits won\'t be saved)</p>')
-    pageinfo = get_page_info()
+    pageinfo = get_page_info(pageid=pid)
     htmlcode = str(timeinfo + htmlcode)
     print(htmlcode)
     updata = {
-        'id' : str(pageinfo[pid]),
+        'id' : str(pageinfo['id']),
         'type' : 'page',
         'title' : 'Master - Slave Status',
         'version' : {'number' : pageinfo['version']['number'] + 1},
