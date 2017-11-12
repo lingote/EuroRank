@@ -67,7 +67,7 @@ def main():
     comments = 'Eintrage mit mindestens 5 \'impressions\''
     updateconf(top20all, 'Top 20 Positionen - voller Zeitraum', comments, 4194374)
     updateconf(top20allnoeuro, 'Top 20 Pos. ohne \'euro\' im Keyword - voller Zeitraum', comments, 4194383)
-    updateconf(top20lowctr, 'Gute Position, schlechte Click Rate - voller Zeitraum', comments, 4194388)
+    updateconf(top20lowctr, 'Top 10 Position, schlechte Click Rate - voller Zeitraum', comments, 4194388)
 
 
 if __name__ == '__main__':
