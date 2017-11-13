@@ -25,7 +25,7 @@ def get_page_info(pageid=65628):
 
 
 def updateconf(htmlcode, title='Top 20 Positionen - voller Zeitraum',
-               comment = '', pid='4194374'):
+               comment = '', pid='4194374', payload=None):
     """
     Takes html and updates the Master-Slave status confluence page
     :param htmlcode:
@@ -55,6 +55,8 @@ def updateconf(htmlcode, title='Top 20 Positionen - voller Zeitraum',
             }
         }
     }
+    if payload is not None:
+    updata['params'] = {'filename' = payload}
     updata = json.dumps(updata)
     r = requests.put(url, data=updata, auth=('admin','1234') ,headers = { 'Content-Type' : 'application/json' })
     print(r.text)
@@ -74,6 +76,13 @@ def main():
     updateconf(top20_30days, 'Top 20 Positionen - letzte 30 Tage', comments, 4194442)
     updateconf(top20noeuro_30days, 'Top 20 Pos. ohne \'euro\' im Keyword - letzte 30 Tage', comments,4194440 )
     updateconf(top20lowctr_30days, 'Top 10 Position, schlechte Click Rate - letzte 30 Tage', comments, 4194438 )
+    keywordtimeseries(service, start='2010-01-01', end='2025-01-01', keyword='czv'):
+    keywordtimeseries(service, start='2010-01-01', end='2025-01-01', keyword='fahrschule'):
+    keywordtimeseries(service, start='2010-01-01', end='2025-01-01', keyword='euro'):
+    keywordtimeseries(service, start='2010-01-01', end='2025-01-01', keyword='lkw'):
+    keywordtimeseries(service, start='2010-01-01', end='2025-01-01', keyword='lastwagen'):
+    comments = 'Rang Zeitreihe f\xfcr Suchbegriffe'
+    updateconf('', 'Search Rank Evolution', comments, 4194516, payload='/home/ignacio/data/eurodriver/EuroRank/ttt.png')
 
 
 if __name__ == '__main__':

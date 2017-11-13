@@ -75,36 +75,47 @@ def overalltop20(service, lookback = -1):
             badts[:20].to_html(index=False))
 
 
-def querywoeuro(service, start='2010-01-01', end='2025-01-01'):
+def keywordtimeseries(service, start='2010-01-01', end='2025-01-01', keyword='czv'):
+    """
+    Create time series of rank and ctr for searches including 'keyword' 
+    in the search term
+    """
     # Latest data has a 3 day lag to present
     latest = datetime.today() - timedelta(days=3)
     lookback = 30
     #latest = latest.strftime('%Y-%m-%d')
     index = pd.date_range(latest - timedelta(lookback), periods=lookback, freq='D')
     #ts = pd.DataFrame(colums=['key', 'impressions', 'ctr', 'rank'], index=index)
-    dimfilter = [{'filters': [{'operator': 'notContains', 'expression': 'euro', 'dimension': 'query'}]}]
-    resdf = {}
-    for i in range(lookback):
-        df = buildrequest(service, startDate = (latest - timedelta(days=1)).strftime('%Y-%m-%d'),
-                           endDate=latest.strftime('%Y-%m-%d'), dimensions=['query'], rowlimit=1500)['rows']
-                           #dimfilter=myfilter)
-        latest = latest - timedelta(days=1)
-        df = pd.DataFrame(df)
-        x = pd.Series(df.columns)
-        x[x[x == 'keys'].index[0]] = 'keyword'
-        df.columns = x
-        df['keyword'] = [i[0] for i in df['keyword']]
-        df = df.ix[(~df['keyword'].str.contains('euro')),:].sort_values('impressions', ascending=False)
-        for i in df.index:
-            if df.ix[i,'keyword'] in resdf:
-                resdf[df.ix[i,'keyword']].append([latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i, 'ctr']])
-                #resdf[df.ix[i,'keyword']].append([latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i, 'ctr']])
-            else:
-                resdf[df.ix[i,'keyword']] = [latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i,'ctr']]
-                #resdf[df.ix[i,'keyword']] = pd.DataFrame(latest.strftime('%Y-%m-%d'), df.ix[i,'position'], df.ix[i,'impressions'], df.ix[i,'ctr']]
-        #print(df[:20])
-    print(len(resdf))
-    return resdf
+    dimfilter = [{'filters': [{'operator': 'contains', 'expression': keyword, 'dimension': 'query'}]}]
+    df = buildrequest(service, startDate=start, endDate=end,
+                                   dimensions=['date'], dimfilter=dimfilter,
+                                   rowlimit=1500)['rows']
+    df = pd.DataFrame(df)
+    df.index = [i[0] for i in df['keys']]
+    df.index = df.index.to_datetime()
+    df.drop('keys', axis=1, inplace=True)
+
+    fig, ax1 = plt.subplots()
+    pl1, = ax1.plot(1./df['position'], label='Position')
+    ax1.set_ylim(0., 1.1)
+    ax1.set_yticklabels([100, 25, 10, 5, 4, 3, 2, 1])
+    ax1.set_yticks([0.001, 1./25, 1./10, 1./5, 1./4, 1./3, 1./2., 1.])
+    ax1.set_ylabel('search rank', color='b')
+    ax1.tick_params('y', colors='b')
+    ax2 = ax1.twinx()
+    pl2, = ax2.plot(df['ctr'], 'g--', label='Click-Through Rate')
+    ax2.plot(df['ctr'], 'g.')
+    ax2.set_ylabel('ctr', color='g')
+    yup = ax2.get_ylim()[1]
+    ax2.set_ylim(0., yup + yup*0.2)
+    ax2.tick_params('y', colors='g')
+    plt.legend(handles=[pl1, pl2], loc=0)
+    plt.title('Suchbegriffe die \'{}\' enthalten'.format(keyword))
+    fig.tight_layout()
+    fig.autofmt_xdate()
+    plt.savefig('rankanalysis_keywordts_{}.png'.format(keyword))
+    plt.close()
+    return df
 
 
 def makedf():
