@@ -75,7 +75,8 @@ def overalltop20(service, lookback = -1):
             badts[:20].to_html(index=False))
 
 
-def keywordtimeseries(service, start='2010-01-01', end='2025-01-01', keyword='czv'):
+def keywordtimeseries(service, start='2010-01-01', end='2025-01-01', keyword='czv',
+                      path = 'C:/Users/euroadmin/PyCharmProjects/EuroRank/'):
     """
     Create time series of rank and ctr for searches including 'keyword' 
     in the search term
@@ -92,7 +93,7 @@ def keywordtimeseries(service, start='2010-01-01', end='2025-01-01', keyword='cz
                                    rowlimit=1500)['rows']
     df = pd.DataFrame(df)
     df.index = [i[0] for i in df['keys']]
-    df.index = df.index.to_datetime()
+    df.index = pd.to_datetime(df.index)
     df.drop('keys', axis=1, inplace=True)
 
     fig, ax1 = plt.subplots()
@@ -113,9 +114,11 @@ def keywordtimeseries(service, start='2010-01-01', end='2025-01-01', keyword='cz
     plt.title('Suchbegriffe die \'{}\' enthalten'.format(keyword))
     fig.tight_layout()
     fig.autofmt_xdate()
-    plt.savefig('rankanalysis_keywordts_{}.png'.format(keyword))
+    dnow = datetime.today().strftime('%Y-%m-%d')
+    figname = 'rankanalysis_keywordts_{}_{}.png'.format(keyword, dnow)
+    plt.savefig(path+figname)
     plt.close()
-    return df
+    return df, figname
 
 
 def makedf():
